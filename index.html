@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <title>Centres d'information et d'orientation en France métropolitaine</title>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="description" content="Répartition des CIOs en France métropolitaine et difficulté relative d'obtention des académies" />
+      <meta property="og:title" content="Centres d'information et d'orientation en France métropolitaine" />
+      <meta property="og:type" content="article" />
+      <meta property="og:url" content="http://simongeorges.github.io/cios" />
+      <meta property="og:image" content="http://makina-corpus.com/++theme++plonetheme.makinacorpuscom/images/logo.png" />
+      <meta property="og:description" content="Répartition des CIOs en France métropolitaine et difficulté relative d'obtention des académies" />
+      <link rel="stylesheet" href="leaflet.css" />
+      <style>
+html, body {
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+}
+#main {
+  position: relative;
+  height: 100vh;
+}
+#cios {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+#cios .legend {
+  margin: 0;
+  padding: 1rem;
+  width: 12rem;
+  height: calc(100vh - 2rem);
+  text-align: left;
+  background: rgba(255,255,255,0.8);
+  color: #333333;
+  overflow: auto;
+}
+#cios .leaflet-control-attribution {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  text-align: right;
+  width: 13rem;
+}
+@media screen and (max-width: 740px) {
+  #cios .legend {
+    font-size: .8em;
+    width: 9.6rem;
+  }
+  #cios .leaflet-control-attribution {
+    font-size: .8em;
+  }
+}
+      </style>
+    </head>
+
+    <body>
+      <div id="main">
+        <div id="cios">&nbsp;</div>
+      </div>
+    </body>
+
+    <script src="jquery-3.1.1.min.js"></script>
+    <script src="leaflet.js"></script>
+    <script src="chroma.min.js"></script>
+    <script>
+    var map = L.map('cios').setView([46.50, 1.45], 6);
+    L.tileLayer('http://tilestream.makina-corpus.net/v2/osmlight-france/{z}/{x}/{y}.png', {
+      attribution: 'Carte réalisée par <a href="https://twitter.com/simongeorges">Simon Georges</a>, fond de carte par <a href="https://makina-corpus.com">Makina Corpus</a> & données &copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+      maxZoom: 7,
+      minZoom: 6
+    }).addTo(map);
+    var academies = {
+      'Académie de Créteil':21,
+      'Académie de Versailles':23,
+      'Académie d\'Amiens':63,
+      'Académie de Strasbourg':123,
+      'Académie de Reims':123,
+      'Académie de Lyon':137,
+      'Académie d\'Orléans-Tours':139,
+      'Académie de Toulouse':215,
+      'Académie de Rouen':227,
+      'Académie de Besançon':251,
+      'Académie de Nancy-Metz':253,
+      'Académie de Lille':265,
+      'Académie de Grenoble':293,
+      'Académie de Nice':342,
+      'Académie de Bordeaux':342,
+      'Académie de Dijon':343,
+      'Académie de Limoges':437,
+      'Académie de Paris':447,
+      'Académie de Poitiers':457,
+      'Académie de Caen':531,
+      'Académie de Clermont-Ferrand':595,
+      'Académie de Corse':658,
+      'Académie de Montpellier':703,
+      'Académie de Nantes':706,
+      'Académie de Rennes':752,
+      'Académie d\'Aix-Marseille':1037,
+    };
+    function getColorRate(rate) {
+      scale = chroma.scale(['#00FF00', chroma('#FF0000').saturate(50)]);
+      var color = scale(rate).darken(rate*20).hex();
+      return color;
+    }
+    // Legend
+    var legend = L.control({position: 'topright'});
+    legend.onAdd = function (map) {
+      this._div = L.DomUtil.create('div', 'legend info');
+      this.update();
+      return this._div;
+    }
+    legend.update = function(name, points) {
+      html = '<p>Les couleurs correspondent à la difficulté relative de rentrer sur une académie. Le nombre de points indiqués correspond à la moyenne des 5 dernières années.</p>';
+      if (name) {
+        html += '<h3>' + name + '</h3>';
+        html += '<h3>' + points + ' points</h3>';
+      } else {
+        html += '<h3>Survolez une académie...</h3>';
+      }
+      this._div.innerHTML = html;
+    }
+    legend.addTo(map);
+    function highlightFeature(e) {                                                                                                           
+      var layer = e.target;
+      layer.setStyle({weight: 4});
+      layer.setStyle({fillOpacity: 1});
+      layer.setStyle({fillColor:'#291333'});
+      legend.update(layer.feature.properties.name, academies[layer.feature.properties.name]);
+    }
+    function resetHighlight(e) {
+      var layer = e.target;
+      layer.setStyle({weight: 1});
+      layer.setStyle({fillOpacity: 0.8});
+      var points = academies[layer.feature.properties.name];
+      var rate = ((points - 21) / 1016);
+      var color = getColorRate(rate);
+      layer.setStyle({fillColor: color});
+    }
+    function onEachFeature(feature, layer) {
+      // Set shape styles
+      layer.setStyle({
+        fillColor: '#CCCCCC',
+        weight: 1,
+        fillOpacity: 0.8,
+        color: '#291333',
+      });
+      var points = academies[layer.feature.properties.name];
+      var rate = ((points - 21) / 1016);
+      var color = getColorRate(rate);
+      layer.setStyle({fillColor: color});
+      // Event bindings
+      layer.on({
+        mouseover: highlightFeature,
+        mouseout: resetHighlight,
+      });
+    }
+    $.getJSON('academies.json', function(geojson) {
+        L.geoJson(geojson, {onEachFeature: onEachFeature}).addTo(map);
+    });
+    </script>
+</html>
