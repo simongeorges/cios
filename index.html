@@ -31,7 +31,7 @@ html, body {
 #cios .legend {
   margin: 0;
   padding: 1rem;
-  width: 12rem;
+  width: 20rem;
   height: calc(100vh - 2rem);
   text-align: left;
   background: rgba(255,255,255,0.8);
@@ -42,8 +42,7 @@ html, body {
   position: absolute;
   right: 0;
   bottom: 0;
-  text-align: right;
-  width: 13rem;
+  width: 19rem;
 }
 @media screen and (max-width: 740px) {
   #cios .legend {
@@ -71,7 +70,7 @@ html, body {
     L.tileLayer('https://tilestream.makina-corpus.net/v2/osmlight-france/{z}/{x}/{y}.png', {
       attribution: 'Carte réalisée par <a href="https://twitter.com/simongeorges">Simon Georges</a>, fond de carte <a href="https://makina-corpus.com">Makina Corpus</a> & données <a href="https://www.data.gouv.fr/fr/datasets/contours-geographiques-des-academies/">data.gouv.fr</a> sous license ODbL',
       maxZoom: 7,
-      minZoom: 6
+      minZoom: 5
     }).addTo(map);
     var academies = {
       'Académie de Créteil':21,
@@ -101,6 +100,34 @@ html, body {
       'Académie de Rennes':752,
       'Académie d\'Aix-Marseille':1037,
     };
+    var commentaires = {
+      'Académie de Créteil':'',
+      'Académie de Versailles':'',
+      'Académie d\'Amiens':'',
+      'Académie de Strasbourg':'',
+      'Académie de Reims':'',
+      'Académie de Lyon':'<ul><li>Ain :<ul><li>Bourg en Bresse : 1,5</li><li>Trevoux : 2,5</li></ul></li><li>Rhône :<ul><li>Villefranche : 9</li></ul></li></ul>',
+      'Académie d\'Orléans-Tours':'<ul><li>Bourges / St Amand / Vierzon: 0</li><li>Chartes: 4</li><li>Châteaudun: 2</li><li>Dreux: 3</li><li>Nogent la Routrou: 0</li><li>Châteauroux: 1</li><li>Le blanc: 0</li><li>Issoudun: 2</li><li>Chinon / Amboise / Joué / Loches / Tours / Blois / Vendôme / Romorantin: 0</li><li>Gien: 3</li><li>Montargis: 4</li><li>Orléans / Orléans la source / Dronisep: 0</li><li>Pithiviers: 3</li><li>SAIO: 3</li></ul>',
+      'Académie de Toulouse':'',
+      'Académie de Rouen':'',
+      'Académie de Besançon':'<ul><li>Doubs :<ul><li>Besançon : 0</li><li>Montbéliard : 1</li><li>Pontarlier : 2</li></ul></li><li>Haute Saone :<ul><li>Lure : 2</li><li>Vesoul : 2</li></ul></li><li>Jura :<ul><li>Dole : 0</li><li>Poligny : 1</li><li>Lons le Saunier : 1</li><li>Saint Claude : 2</li></ul></li><li>Territoire de Belfort :<ul><li>Belfort : 2</li></ul></li></ul>',
+      'Académie de Nancy-Metz':'',
+      'Académie de Lille':'',
+      'Académie de Grenoble':'',
+      'Académie de Nice':'',
+      'Académie de Bordeaux':'',
+      'Académie de Dijon':'',
+      'Académie de Limoges':'',
+      'Académie de Paris':'',
+      'Académie de Poitiers':'',
+      'Académie de Caen':'',
+      'Académie de Clermont-Ferrand':'',
+      'Académie de Corse':'',
+      'Académie de Montpellier':'',
+      'Académie de Nantes':'',
+      'Académie de Rennes':'',
+      'Académie d\'Aix-Marseille':'',
+    };
     function getColorRate(rate) {
       scale = chroma.scale(['#00FF00', chroma('#FF0000').saturate(50)]);
       var color = scale(rate).darken(rate*20).hex();
@@ -118,6 +145,7 @@ html, body {
       if (name) {
         html += '<h3>' + name + '</h3>';
         html += '<h3>' + points + ' points</h3>';
+        html += '<h3>Informations éventuelles sur les postes vacants / de contractuels :</h3><p>' + commentaires[name] + '</p>';
       } else {
         html += '<h3>Survolez une académie...</h3>';
       }
