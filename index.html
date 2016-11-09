@@ -106,7 +106,7 @@ html, body {
       'Académie d\'Amiens':'',
       'Académie de Strasbourg':'',
       'Académie de Reims':'',
-      'Académie de Lyon':'<ul><li>Ain :<ul><li>Bourg en Bresse : 1,5</li><li>Trevoux : 2,5</li></ul></li><li>Rhône :<ul><li>Villefranche : 9</li></ul></li></ul>',
+      'Académie de Lyon':'Voir aussi <a href="http://www.lyon.snes.edu/spip/IMG/pdf/liste_des_postes_vacants_siam_2016.pdf">ce PDF</a><ul><li>Ain :<ul><li>Bourg en Bresse : 1,5</li><li>Trevoux : 2,5</li></ul></li><li>Rhône :<ul><li>Villefranche : 9</li></ul></li></ul>',
       'Académie d\'Orléans-Tours':'<ul><li>Bourges / St Amand / Vierzon: 0</li><li>Chartes: 4</li><li>Châteaudun: 2</li><li>Dreux: 3</li><li>Nogent la Routrou: 0</li><li>Châteauroux: 1</li><li>Le blanc: 0</li><li>Issoudun: 2</li><li>Chinon / Amboise / Joué / Loches / Tours / Blois / Vendôme / Romorantin: 0</li><li>Gien: 3</li><li>Montargis: 4</li><li>Orléans / Orléans la source / Dronisep: 0</li><li>Pithiviers: 3</li><li>SAIO: 3</li></ul>',
       'Académie de Toulouse':'',
       'Académie de Rouen':'',
@@ -125,7 +125,7 @@ html, body {
       'Académie de Corse':'',
       'Académie de Montpellier':'',
       'Académie de Nantes':'',
-      'Académie de Rennes':'',
+      'Académie de Rennes':'Voir éventuellement <a href="http://www.sgencfdt-bretagne.fr/attachments/article/413/Lettre%20COP%20entrant%20inter%20OT%20mars%202015.pdf">ce PDF</a>',
       'Académie d\'Aix-Marseille':'',
     };
     function getColorRate(rate) {
@@ -148,6 +148,7 @@ html, body {
         html += '<h3>Informations éventuelles sur les postes vacants / de contractuels :</h3><p>' + commentaires[name] + '</p>';
       } else {
         html += '<h3>Survolez une académie...</h3>';
+        html += '<ul><li>Guyane : 503 points</li><li>Guadeloupe : 692 points</li><li>Martinique : 753 points</li></ul>';
       }
       this._div.innerHTML = html;
     }
