@@ -201,7 +201,7 @@ html, body {
       });
     }
     function pointToLayer(featureData, latlng) {
-      return L.circleMarker(latlng, {radius: 1});
+      return L.circleMarker(latlng, {radius: 2});
     }
     $.getJSON('academies.json', function(geojson) {
         var academies = L.geoJson(geojson, {onEachFeature: onEachFeature});
