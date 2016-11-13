@@ -141,7 +141,7 @@ html, body {
       return this._div;
     }
     legend.update = function(name, points) {
-      html = '<p>Les couleurs correspondent à la difficulté relative de rentrer sur une académie. Le nombre de points indiqués correspond à la moyenne des 5 dernières années.</p>';
+      html = '<p>Les couleurs correspondent à la difficulté relative de rentrer sur une académie. Le nombre de points indiqués au survol de l\'académie correspond à la moyenne des 5 dernières années.</p><p>Les points sur la carte correspondent aux CIOS : cliquez dessus pour voir leur nom.</p>';
       if (name) {
         html += '<h3>' + name + '</h3>';
         html += '<h3>' + points + ' points</h3>';
@@ -187,8 +187,31 @@ html, body {
         mouseout: resetHighlight,
       });
     }
+    function onEachPointFeature(feature, layer) {
+      var style = {
+        "color": '#000000',
+        "weight": 1,
+        "fillOpacity": 1,
+        "opacity": 1,
+        "clickable": true,
+      };
+      layer.setStyle(style);
+      layer.on('click', function(e) {
+        e.target.bindPopup(feature.properties.Nom).openPopup();
+      });
+    }
+    function pointToLayer(featureData, latlng) {
+      return L.circleMarker(latlng, {radius: 1});
+    }
     $.getJSON('academies.json', function(geojson) {
-        L.geoJson(geojson, {onEachFeature: onEachFeature}).addTo(map);
+        var academies = L.geoJson(geojson, {onEachFeature: onEachFeature});
+        academies.addTo(map);
+        academies.bringToBack();
+    });
+    $.getJSON('cios.json', function(geojson) {
+        var cios = L.geoJson(geojson, {pointToLayer: pointToLayer, onEachFeature: onEachPointFeature});
+        cios.addTo(map);
+        cios.bringToFront();
     });
     </script>
 </html>
